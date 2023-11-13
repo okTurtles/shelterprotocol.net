@@ -1,0 +1,22 @@
+@import "typography";
+
+.sp-video-integration {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+}
+
+body.has-easter-egg-animation {
+  @media (min-width: 72rem) {
+    .right-sidebar {
+      position: absolute;
+      padding-top: 0;
+    }
+  }
+}

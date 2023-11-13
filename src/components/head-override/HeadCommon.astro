@@ -1,0 +1,22 @@
+<!-- Global Metadata -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width" />
+<meta name="generator" content={Astro.generator} />
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+<link rel="sitemap" href="/sitemap.xml" />
+
+<!-- Scrollable a11y code helper -->
+<script src="/make-scrollable-code-focusable.js" is:inline></script>
+
+<!-- This is intentionally inlined to avoid FOUC -->
+<script is:inline>
+	const root = document.documentElement;
+	const theme = localStorage.getItem('starlight-theme');
+	if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+		root.dataset.theme = 'dark';
+	} else {
+		root.dataset.theme = 'light';
+	}
+</script>

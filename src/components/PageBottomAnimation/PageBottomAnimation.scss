@@ -1,0 +1,24 @@
+.page-bottom-animation-container {
+  position: relative;
+  box-sizing: border-box;
+  background-color: var(--sl-color-black);
+  margin-bottom: 2px;
+  height: 0;
+  width: 100%;
+  overflow: hidden;
+
+  @media screen and (min-width: 50rem) {
+    width: calc(100% - 18.75rem); // 18.75rem (300px) here is the width of the sidebar menu
+    left: 18.75rem;
+  }
+
+  &.is-active {
+    overflow: initial;
+
+    #turtle-canvas {
+      position: sticky;
+      top: 0;
+      left: 0;
+    }
+  }
+}
