@@ -89,4 +89,4 @@ export default defineConfig({
     }
   },
   site: 'https://shelterprotocol.net'
-});
+})
