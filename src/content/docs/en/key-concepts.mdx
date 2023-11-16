@@ -1,0 +1,101 @@
+---
+title: "Key Concepts"
+---
+import spmessageRef from './images/SPMessage.svg'
+
+The Shelter Protocol (SP) defines a method to create a lightweight, high-level, federated virtual machine out of contract chains. Contract chains are what define [smart contracts](https://en.wikipedia.org/wiki/Smart_contract) along with their activity in SP.
+
+We can use these contract chains to create and define concepts in our programs in a similar way to how Classes and Objects are used in [Object-oriented Programming](https://en.wikipedia.org/wiki/Object-oriented_programming), except these Classes and Objects can be shared across many devices while keeping their state end-to-end encrypted.
+
+### SPMessage
+
+At the heart of the Shelter Protocol is `SPMessage`, the building block for creating messages that are used to define both contracts and their actions. Each `SPMessage` is used to send one of the [opcodes](#opcodes) to the contract chain.
+
+{/* Refernce for the usage of '.src' attribute here: https://docs.astro.build/en/guides/images/#images-in-mdx-files */}
+<img src={spmessageRef.src} alt="Simple diagram showing two SPMessages, the first OP_CONTRACT, the next, OP_ACTION_ENCRYPTED" class="center" />
+
+The very first `SPMessage` in a contract chain defines the contract that's being created and sets its initial data. You can think of it as the constructor from OOP, being used to instantiate a class.
+
+All subsequent messages are used to update the state of that contract chain. These messages are typically called "actions", and they can be thought of as method invocations in OOP.
+
+Together, these messages form an append-only chain of events that is used to build up a state for that contract chain.
+
+📚 [**Reference: `SPMessage`**](/en/spmessage)\
+📚 [**Message Processing**](/en/message-processing)
+
+### Contract Chains
+
+"Contract Chains" are just a list of events. They are special in that they are immutable and append-only. Each event in the chain references the code that will be used to process the event and update the contract state.
+
+The concept of a "list of events" is fundamental in computer science. At their lowest level, CPUs are designed for one thing: processing a list of events and updating a state based on that list of events. Shelter Protocol is no different, except that it shares this list of events across devices and adds primitives for end-to-end encryption. We need a list of events so that we can reproduce the same state on [multiple devices](/en/multi-device).
+
+The first event defines and initializes the contract (or "class instance" in OOP terms). Each subsequent event invokes actions that [update the state](/en/message-processing) for that contract instance by processing the event through a small program called a [smart contract](https://en.wikipedia.org/wiki/Smart_contract) (aka a "contract").
+
+Because developers make mistakes, contracts are upgradeable, and every event [references the specific version](#contract-manifests) of the contract that should be used to interpret that event. This guarantees that the final state that results from processing all of the events will be the same no matter when the events are processed.
+
+Contracts are referenced by their `contractID`, which is equal to the hash of the first message in the contract chain.
+
+📚 [**Message Processing**](/en/message-processing)\
+📚 [**Multiple Devices**](/en/multi-device)
+
+### Key-value Store
+
+Contract chains and their events are stored in a key-value store. The protocol does not specify what key-value store needs to be used. It can be any key-value store.
+
+Every event is stored using the hash of its data as the key. This is called "content addressing", and can be found in other protocols like [IPFS](https://en.wikipedia.org/wiki/InterPlanetary_File_System). Content addressing and message signing allows the Shelter Protocol to forever maintain the integrity of all events.
+
+The key-value store is used not just for storing events, but also for keeping track of other state:
+
+- The hash of the most recent event for any given contract, also known as the `contractHEAD`. This event is stored under the key `head=<contractID>`.
+- It can also be used to store a mapping from a username to the identity contract that represents that user.
+
+### Contract Manifests
+
+Contracts are stored in the key-value store along with a manifest file. This JSON file specifies various metadata about the contract, including:
+
+- Version
+- Filename (including file extension)
+- Author(s)
+- Contract hash
+- Cryptographic signature
+
+When contracts are loaded by the client, they are loaded first by specifying the hash of the manifest file.
+
+Every `SPMessage` references the specific manifest used to interpret it. This allows contract chains to be upgraded over time while ensuring a deterministic state. Old messages in the chain will always be interpreted using the correct version of the contract.
+
+📚 [**Reference: Contract Manifest**](/en/contract-manifests)\
+📚 [**Message Processing**](/en/message-processing)
+
+### Opcodes
+
+Shelter Protocol defines a lightweight [decentralized/federated](/en/federation) end-to-end encrypted virtual machine, and as such it contains opcodes for performing actions within this virtual machine:
+
+- [`OP_CONTRACT`](/en/opcodes#op_contract)
+- [`OP_ACTION_ENCRYPTED`](/en/opcodes#op_action_encrypted)
+- [`OP_ACTION_UNENCRYPTED`](/en/opcodes#op_action_unencrypted)
+- [`OP_KEY_ADD`](/en/opcodes#op_key_add)
+- [`OP_KEY_UPDATE`](/en/opcodes#op_key_update)
+- [`OP_KEY_DEL`](/en/opcodes#op_key_del)
+- [`OP_KEY_REQUEST`](/en/opcodes#op_key_request)
+- [`OP_KEY_REQUEST_SEEN`](/en/opcodes#op_key_request_seen)
+- [`OP_KEY_SHARE`](/en/opcodes#op_key_share)
+- [`OP_PROP_SET`](/en/opcodes#op_prop_set)
+- [`OP_PROP_DEL`](/en/opcodes#op_prop_del)
+- [`OP_WRITE_REQUEST`](/en/opcodes#op_write_request)
+- [`OP_WRITE_REQUEST_RESPONSE`](/en/opcodes#op_write_request_response)
+- [`OP_ATOMIC`](/en/opcodes#op_atomic)
+
+### Password Salt Retrieval
+
+Since every action in SP is signed using a user's private key, which in turn [is derived from their password](/en/multi-device), it's very important to use password salts along with the user's password to protect against brute force password cracking attacks.
+
+The Shelter Protocol has within it a zero-knowledge sub-protocol for storing and retrieving passwords salts. This makes it possible for users to keep their traditional username/password flow while maintaining a very high level of security. Users are still able to log in from any device using just their username and password, without needing to scan any QR codes. The user is able to prove to the server in a zero-knowledge way that they know their password, and thereby retrieve the salt needed to compute their private key.
+
+📚 [**Multiple Devices**](/en/multi-device) \
+📚 [**Reference: ZKPP**](/en/zkpp)
+
+### State Snapshots
+
+Heavily modified contracts can take an unacceptably long time to fully sync. In such instances, Shelter Protocol supports saving state snapshots every `N` messages. This makes it possible to catch up to the latest state of the contract without having to sync the entire chain. It can also help servers to save data by periodically trimming old messages.
+
+📚 [**Reference: State Snapshots**](/en/state-snapshots)

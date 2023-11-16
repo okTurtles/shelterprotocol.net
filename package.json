@@ -1,0 +1,25 @@
+{
+  "name": "",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev --port 4000",
+    "start": "astro dev --port 4000",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "1.1.0",
+    "@astrojs/preact": "3.0.0",
+    "@astrojs/starlight": "0.11.2",
+    "@docsearch/css": "3.5.2",
+    "@types/node": "20.6.1",
+    "astro": "3.2.0",
+    "preact": "10.17.1"
+  },
+  "devDependencies": {
+    "html-escaper": "3.0.3",
+    "sass": "1.63.6"
+  }
+}
