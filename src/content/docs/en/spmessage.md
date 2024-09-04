@@ -38,6 +38,7 @@ Wherever hashes appear in the protocol, they are 32-byte [blake2b](https://www.b
 - `manifest` is the [manifest hash](/en/contract-manifests) of the contract code used to interpret this message.
 - `uuid` is a [UUIDv4](https://en.wikipedia.org/wiki/Universally_unique_identifier#Version_4_(random)) unique identifier for this message. Useful for uniquely identifying messages in case of `previousHEAD` conflicts. See [Resending Messages](#resending-messages).
 - `height` is an counter starting at `0` that gets incremented by `1` with each new message added to the chain. Useful in certain situations related to validating message signatures on rotated keys.
+- `originatingContractHeight` [...]
 
 ### Section: `message`
 
