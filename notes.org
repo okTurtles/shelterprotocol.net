@@ -1,0 +1,149 @@
+
+
+* Verify OP Codes to the documentation
+  * It would be nice for the docs to make clear what is input and what is output, with their types, etc
+  * As well as having example usage of the OP_CODE
+
+** [100%] OP_CONTRACT
+   * [X]
+     - verified with Greg on call
+** [100%] OP_ACTION_UNENCRYPTED
+   * [X]
+*** Function Signature
+#+begin_src js
+  /**
+  ,* Creates and optionally publishes an encrypted or unencrypted action message.
+  ,*
+  ,* @param opType - The operation type: 'ae' for encrypted action, 'au' for unencrypted action.
+  ,* @param params - An object containing the following properties:
+  ,*   @property {boolean} atomic - If true, the message won't be published immediately.
+  ,*   @property {string} action - The action to be performed.
+  ,*   @property {string} contractID - The ID of the contract.
+  ,*   @property {any} data - The data associated with the action.
+  ,*   @property {Object} hooks - Hooks for the publish process.
+  ,*   @property {Object} publishOptions - Options for publishing the message.
+  ,*   @property {string} [innerSigningKeyId] - The ID of the inner signing key.
+  ,*   @property {string} [encryptionKeyId] - The ID of the encryption key (required for encrypted actions).
+  ,*   @property {string} signingKeyId - The ID of the signing key.
+  ,*
+  ,* @returns {Promise<GIMessage>} A promise that resolves to the created GIMessage object.
+  ,*
+  ,* @throws {Error} Throws an error if trying to create an encrypted action without providing an encryption key ID.
+  ,*/
+#+end_src
+*** Notes
+  * In Docs, Only `action`, `data`, `meta` are specified. Is this sufficient in this case?
+    - In the code, `ChelActionParams` is second parameter and includes all the above; what of these also wants/needs documentation?
+  * group signing key - signs header, payload, everything
+  * innerSigningKey - signs payload, individual's key (optional)
+
+*** Trace
+  * [[/Users/avanti/dev/okTurtles/group-income/shared/domains/chelonia/chelonia.js::1129][chelonia.js:1129]] outEncryptedOrUnencryptedAction.call(...)
+    * [[/Users/avanti/dev/okTurtles/group-income/shared/domains/chelonia/chelonia.js::1621][chelonia.js:1621]] outEncryptedOrUnencryptedAction
+      * [[/Users/avanti/dev/okTurtles/group-income/shared/domains/chelonia/chelonia.js::48][chelonia:48]]   ChelActionParams
+#+begin_src javascript
+  ChelActionParams = {
+    action: string;
+    server?: string;
+    contractID: string;
+    data: Object;
+    signingKeyId: string;
+    innerSigningKeyId: string;
+    encryptionKeyId: ?string;
+    hooks?: {
+      prepublishContract?: (GIMessage) => void;
+      prepublish?: (GIMessage) => Promise<void>;
+      postpublish?: (GIMessage) => Promise<void>;
+    };
+    publishOptions?: { maxAttempts: number };
+    atomic: boolean;
+  }
+#+end_src
+      * [[/Users/avanti/dev/okTurtles/group-income/shared/domains/chelonia/chelonia.js::1520][chelonia:1520]] contractNameFromAction
+      * [[/Users/avanti/dev/okTurtles/group-income/shared/domains/chelonia/chelonia.js::1635][chelonia:1635 signedOutgoingDataWithRawKey()]]
+        - [[/Users/avanti/dev/okTurtles/group-income/shared/domains/chelonia/signedData.js::189][/chelonia/signedData.js:189]] signedOutgoingDataWithRawKey
+      * [[/Users/avanti/dev/okTurtles/group-income/shared/domains/chelonia/chelonia.js::1643][chelonia:1643]] GIMessage.createV1_0
+        - [[/Users/avanti/dev/okTurtles/group-income/shared/domains/chelonia/GIMessage.js::235][GIMessage:235]] createV1_0
+          - [[/Users/avanti/dev/okTurtles/group-income/shared/domains/chelonia/GIMessage.js::490][GIMessage:490]] messageToParams
+
+** [0%] OP_ACTION_ENCRYPTED
+   * [ ]
+** [0%] OP_KEY_ADD
+   * [ ] add key
+       allowedActions <optional>
+** [0%] OP_KEY_UPDATE "ku"
+   * [ ]
+*** Trace
+
+** [50%] OP_KEY_DEL  "kd"
+   * [ ]
+   * [X]
+*** Trace
+   * [[/Users/avanti/dev/okTurtles/group-income/shared/domains/chelonia/chelonia.js::1201]['chelonia/out/keyDel']] <[[/Users/avanti/dev/okTurtles/group-income/shared/domains/chelonia/chelonia.js::79][ChelKeyDelParams]]> -> msg
+   * [[/Users/avanti/dev/okTurtles/group-income/shared/domains/chelonia/chelonia.js::1222][chelonia:1222]] GIMessage.OP_KEY_DEL
+     * signedOutgoingData [[/Users/avanti/dev/okTurtles/group-income/shared/domains/chelonia/signedData.js::149][signedData.js:149]]
+       - rootStateFn
+       -
+     * encryptedOutgoingData\ [[/Users/avanti/dev/okTurtles/group-income/shared/domains/chelonia/encryptedData.js::148][encryptedData.js:148]]
+       - This function is used to encrypt the key ID if it has a private part.
+   * GIMessage.createV1_0 GIMessage.js::
+
+** [0%] OP_KEY_REQUEST
+   * [ ]
+*** Trace
+  * 
+** [0%] OP_KEY_REQUEST_SEEN
+   * [ ]
+** [0%] OP_KEY_SHARE
+   * [ ]
+** [0%] OP_PROP_SET
+   * [ ]
+** [0%] OP_PROP_DEL
+   * [ ]
+** [0%] OP_WRITE_REQUES
+   * [ ]
+** [0%] OP_WRITE_REQUEST_RESPONSE
+   * [ ]
+** [0%] OP_ATOMIC
+   * [ ]
+
+
+
+
+
+* Todo
+** DONE ;; http://localhost:4000/en/opcodes/#op_key_add
+CLOSED: [2024-09-03 Tue 15:42]
+       Key data a JSON stringified array of the following structure:
+       Key data *is*
+** DONE Missing keys in head description:
+CLOSED: [2024-09-05 Thu 20:31]
+  - http://localhost:4000/en/spmessage#section-head
+  - originatingContractHeight ([[https://github.com/okTurtles/group-income/blob/master/shared/domains/chelonia/GIMessage.js#L262][GIMessage.js:262]])
+    https://github.com/okTurtles/group-income/blob/master/shared/domains/chelonia/GIMessage.js#L262
+    - Added commit, See Issue #5, needs description
+
+
+
+
+
+
+* Thoughts
+** Consider adding links to topics listed under Intro/How
+
+
+
+OP_KEY_ADD
+allowedActions <optional>
+
+
+data
+
+
+;; http://localhost:4000/en/opcodes/#op_key_add
+Key data a JSON stringified array of the following structure:
+Key data *is*
+
+
+git reset
+API_PORT env var
