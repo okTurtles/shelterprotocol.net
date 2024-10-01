@@ -104,7 +104,7 @@ For example, every contract should have a `CSK` (`Contract Signing Key`, marked 
 
 `"purpose"` is an array of strings that state the key's purpose. Typically this will be either `"sign"` (for signing messages), or `"enc"` for encrypting/decrypting messages, or it could be both. Other arbitrary values are allowed too if they are useful to protocol implementers.
 
-`"data"` is a JSON string specifying the public key itself (other types of keys, like encrypted secret keys, are stored under `meta.private`). Key data a JSON stringified array of the following structure:
+`"data"` is a JSON string specifying the public key itself (other types of keys, like encrypted secret keys, are stored under `meta.private`). Key data is a JSON stringified array of the following structure:
 
 ```
 [type, publicKey, secretKey]: [string, string, null] | [string, null, string]

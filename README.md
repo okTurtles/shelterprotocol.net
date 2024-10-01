@@ -1,6 +1,6 @@
 # Shelter Protocol Documentation
 
-Welcome to Shelter Protocol documentation website!
+Welcome to Shelter Protocol documentation website, [shelterprotocol.net](https://shelterprotocol.net/)!
 
 ## 🧞 Commands
 

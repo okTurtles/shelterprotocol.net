@@ -51,7 +51,7 @@ It is up to developers to be aware of such possibilities and handle them accordi
 
 ### Contract & VM State
 
-Special keys on contract state are prefixed with `_`. These are managed by Shelter Protocol implementations and must not set by developers. Currently, two special keys are defined:
+Special keys on contract state are prefixed with `_`. These are managed by Shelter Protocol implementations and must not be set by developers. Currently, two special keys are defined:
 
 - `_vm` — is used to store various metadata critical to interpreting messages that also needs to be sync'd across clients. For example, `_vm.authorizedKeys` stores keys that are used to verify message signatures.
 - `_volatile` — This represents client-local information for contract related data like private keys. Implementations could store this information someplace else if they prefer. `_volatile` must not be shared publicly. For example, `_volatile.keys` is used to store private keys that decrypt messages. This attribute is not stored in [state snapshots](/en/state-snapshots) and never leaves the client device.

@@ -38,7 +38,7 @@ The downside of this approach is that while we protect the secret key from being
 
 ### Unique Keys Per Device
 
-It is possible to use Shelter Protocol with a UKPD approach if desired.
+It is possible to use Shelter Protocol with a Unique Keys Per Device (UKPD) approach if desired.
 
 Shelter Protocol defines the following primitives for key management and key sharing:
 
