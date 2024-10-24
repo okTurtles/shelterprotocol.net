@@ -1,10 +1,10 @@
 ---
-title: "The 'shelter' URI Scheme"
+title: "The `shelter` URI Scheme"
 ---
 
 ## Introduction
 
-The 'shelter' URI scheme identifies resources that can be reached through the
+The `shelter` URI scheme identifies resources that can be reached through the
 Shelter Protocol. These resources are generic and could take various forms.
 For example, a resource could refer to a contract, a manifest or a file part,
 among other options. Each resource is identified by a self-referencing hash,
@@ -15,16 +15,16 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in [[RFC2119]](#ref-RFC2119).
 
-In this document, URIs are enclosed in '<' and '>' as described in Appendix C of
+In this document, URIs are enclosed in `<` and `>` as described in Appendix C of
 [[STD66]](#ref-STD66). Extra whitespace and line breaks are added to present
 long URIs -- they are not part of the actual URI.
 
-## Syntax of a 'shelter' URI
+## Syntax of a `shelter` URI
 
-In its simplest form, a 'shelter' URI is the 'shelter:' string immediately
+In its simplest form, a `shelter` URI is the `shelter:` string immediately
 followed by a CID and nothing else.
 
-The format syntax of a 'shelter' URI is described using the ABNF of
+The format syntax of a `shelter` URI is described using the ABNF of
 [[STD68]](#ref-STD68):
 
     shelterURI   = "shelter:" [ "//" authority "/" ] cid [ "?" query ]
@@ -34,51 +34,51 @@ The format syntax of a 'shelter' URI is described using the ABNF of
 
 ## Semantics and Operations
 
-The 'shelter' URI scheme is used to identify resources that can be accessed
+The `shelter` URI scheme is used to identify resources that can be accessed
 through the Shelter Protocol. The CID (Content Identifier) portion of the URI
 uniquely identifies the resource, and the optional authority and query
 components can be used to provide additional context or parameters for
 accessing the resource.
 
-When a 'shelter' URI is dereferenced, the client should use the Shelter Protocol
+When a `shelter` URI is dereferenced, the client should use the Shelter Protocol
 to retrieve the identified resource. The specific operations and behaviors
 involved in this process are defined by the Shelter Protocol specification.
 
 ## Encoding
 
 Any reserved characters, as defined in [[STD66]](#ref-STD66), MUST be encoded
-when used in a 'shelter' URI.
+when used in a `shelter` URI.
 
 ## Examples
 
 This section is non-normative.
 
 A URI for a resource identified by the CID
-'z9brRu3VMfgn81z36GzeKDsZBoUEjsNKccJA5BpZVsorhcefFnZT':
+`z9brRu3VMfgn81z36GzeKDsZBoUEjsNKccJA5BpZVsorhcefFnZT`:
 
     <shelter:z9brRu3VMfgn81z36GzeKDsZBoUEjsNKccJA5BpZVsorhcefFnZT>
 
-A URI for the current key named 'csk' for a resource (a smart contract, in
+A URI for the current key named `csk` for a resource (a smart contract, in
 this case) identified by the CID
-'z9brRu3VMfgn81z36GzeKDsZBoUEjsNKccJA5BpZVsorhcefFnZT':
+`z9brRu3VMfgn81z36GzeKDsZBoUEjsNKccJA5BpZVsorhcefFnZT`:
 
     <shelter:z9brRu3VMfgn81z36GzeKDsZBoUEjsNKccJA5BpZVsorhcefFnZT?keyName=csk>
 
-A URI for the current key named 'csk' for a resource (a smart contract, in
+A URI for the current key named `csk` for a resource (a smart contract, in
 this case) identified by the CID
-'z9brRu3VMfgn81z36GzeKDsZBoUEjsNKccJA5BpZVsorhcefFnZT', to be loaded from a
-server located at the address 'example.com':
+`z9brRu3VMfgn81z36GzeKDsZBoUEjsNKccJA5BpZVsorhcefFnZT`, to be loaded from a
+server located at the address `example.com`:
 
     <shelter:example.com/z9brRu3VMfgn81z36GzeKDsZBoUEjsNKccJA5BpZVsorhcefFnZT
     ?keyName=csk>
 
 ## Security Considerations
 
-The security considerations for the 'shelter' URI scheme are primarily related
+The security considerations for the `shelter` URI scheme are primarily related
 to the security of the Shelter Protocol itself. Implementers SHOULD ensure that
 they follow best practices for secure protocol design and implementation, and
 they MUST properly validate and sanitize any input or output related to
-'shelter' URIs.
+`shelter` URIs.
 
 In particular, a Shelter resource can refer to computer code that could result
 in dynamic code execution, such as smart contracts, or additional network
