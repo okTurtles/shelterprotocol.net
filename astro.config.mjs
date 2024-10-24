@@ -59,7 +59,8 @@ export default defineConfig({
             { label: 'Invite Keys', link: '/en/invite-keys' },
             { label: 'Contract Manifests', link: '/en/contract-manifests' },
             { label: 'State Snapshots', link: '/en/state-snapshots' },
-            { label: 'ZKPP', link: '/en/zkpp' }
+            { label: 'ZKPP', link: '/en/zkpp' },
+            { label: 'URI Scheme', link: '/en/scheme' }
           ]
         },
         {
