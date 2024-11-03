@@ -1,7 +1,16 @@
+---
+import { SITE } from '@/consts';
+const { entry } = Astro.props
+
+// [Reference] Fetching page-title from the page's frontmatter: https://starlight.astro.build/guides/overriding-components/
+const pageTitle = `${entry?.data.title || ''} 🚀 ${SITE.title}`
+---
+
 <!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width" />
 <meta name="generator" content={Astro.generator} />
+<title>{pageTitle}</title>
 
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
