@@ -2,7 +2,7 @@
 import { SITE } from '@/consts';
 const { entry } = Astro.props
 
-// [Reference] Fetching page-title from the page's frontmatter: https://starlight.astro.build/guides/overriding-components/
+// [Reference] Fetching page-title from the page's frontmatter: https://starlight.astro.build/guides/overriding-components/#use-page-data
 const pageTitle = `${entry?.data.title || ''} 🚀 ${SITE.title}`
 ---
 
