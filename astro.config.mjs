@@ -12,7 +12,7 @@ export default defineConfig({
     preact(),
     mdx(),
     starlight({
-      title: 'Shelter protocol',
+      title: 'Shelter Protocol',
       defaultLocale: 'en',
       editLink: {
         baseUrl: GITHUB_EDIT_URL
