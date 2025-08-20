@@ -3,7 +3,7 @@ import HeadCommon from "./HeadCommon.astro";
 import HeadSEO from "./HeadSEO.astro";
 ---
 
-<HeadCommon />
+<HeadCommon {...Astro.props} />
 <HeadSEO {...Astro.props} />
 <!-- Matomo -->
 <script>
