@@ -7,7 +7,8 @@ description: "Introduction to the Shelter Protocol"
 
 Shelter Protocol is a protocol for creating end-to-end encrypted, federated, user-friendly web applications.
 
-<iframe class="sp-video-integration" width="560" height="315" src="https://www.youtube-nocookie.com/embed/w0GQz-UF0Lk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<!-- <iframe class="sp-video-integration" width="560" height="315" src="https://www.youtube-nocookie.com/embed/w0GQz-UF0Lk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> -->
+<iframe id="odysee-iframe" style="width:100%; aspect-ratio:16 / 9;" src="https://odysee.com/%24/embed/%40okTurtles%3Ae%2Fshelter-protocol-introduction-by-greg%3A5?r=J91Yd9UJDqP36LmGQZaGwG95T1NcnzDW" allowfullscreen></iframe>
 
 ### Why?
 
