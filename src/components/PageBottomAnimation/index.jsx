@@ -5,17 +5,19 @@ import { createPortal } from 'preact/compat';
 import { initTurtleAnimation, getPageContentWidth } from './turtle-animation'
 import './PageBottomAnimation.scss'
 
-const PAGE_EXTENSION_DELAY = 1000
+const PAGE_EXTENSION_DELAY = 750
 const PAGE_EXTENSION_MAX_COUNT = 7
 
 // helper method
 const isPageFullyScrolled = () => {
-  // reference: https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight#determine_if_an_element_has_been_totally_scrolled
   const rootHtml = document.documentElement
   const isPageScrollable = rootHtml.scrollHeight - rootHtml.clientHeight > 1
+  const totalHeight = rootHtml.scrollHeight
+  const scrollTop = window.scrollY || rootHtml.scrollTop
+  const viewportHeight = window.innerHeight
 
   return isPageScrollable
-    ? Math.abs(rootHtml.scrollHeight - rootHtml.clientHeight - rootHtml.scrollTop) < 2
+    ? totalHeight - (scrollTop + viewportHeight) < 2
     : true
 }
 
