@@ -1,10 +1,12 @@
 ---
 import HeadCommon from "./HeadCommon.astro";
 import HeadSEO from "./HeadSEO.astro";
+
+const pageEntry = Astro.locals.starlightRoute.entry || {}
 ---
 
-<HeadCommon {...Astro.props} />
-<HeadSEO {...Astro.props} />
+<HeadCommon {...Astro.props} entry={pageEntry} />
+<HeadSEO {...Astro.props} entry={pageEntry} />
 <!-- Matomo -->
 <script>
   var _paq = window._paq = window._paq || [];
