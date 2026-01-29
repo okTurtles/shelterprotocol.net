@@ -2,10 +2,14 @@
 title: "Opcodes"
 description: "Shelter Protocol Opcodes Reference"
 ---
+import { Aside } from '@astrojs/starlight/components';
+
 
 All opcodes are wrapped using [`SPMessage`](/en/spmessage). This document shows the possible values for `<op-value>`, as well as impacted client state.
 
-> ⚠︎ *This specification is beta quality. Anywhere there is a conflict between this specification and the first implementation of this specification (Chelonia) is a bug. Please let us know if you come across any contradictions between specification and Chelonia.*
+<Aside type="caution">
+  *This specification is beta quality. Anywhere there is a conflict between this specification and the first implementation of this specification ([Chelonia](https://github.com/okTurtles/libcheloniajs)) is a bug. Please [let us know](https://github.com/okTurtles/shelterprotocol.net/issues) if you come across any contradictions.*
+</Aside>
 
 ### `OP_CONTRACT`
 
@@ -79,10 +83,12 @@ For example, every contract should have a `CSK` (`Contract Signing Key`, marked 
   {
     "id": "<keyId>",
     "name": "<keyName>",
-    "purpose": ["sign", "enc", "..."],
+    "purpose": ["sig", "enc", "..."],
     "data": "<JSON encoded array of key data>",
     "permissions": ["<opcode-1>", "<opcode-2>", "..."],
     "ringLevel": <positive-integer-or-zero>,
+    "allowedActions": "*" | ["selector-1", "selector-2", ...], // OPTIONAL
+    "permissionsContext": ["scope-1", "scope-2", ...], // OPTIONAL
     "foreignKey": "sp:[<host.com>/contract/]<contractID>?keyName=<foreignKeyName>", // OPTIONAL
     "meta": { ... } // OPTIONAL
   },
@@ -102,7 +108,7 @@ For example, every contract should have a `CSK` (`Contract Signing Key`, marked 
 - `#cek`: this is the `Contract Encryption Key`. It is a key that is most often used to encrypt data within the contract. Contracts that wish to send encrypted data to this contract will use the `#cek`.
 - `#inviteKey-`: is used to define [invite keys for creating and joining groups.](/en/invite-keys)
 
-`"purpose"` is an array of strings that state the key's purpose. Typically this will be either `"sign"` (for signing messages), or `"enc"` for encrypting/decrypting messages, or it could be both. Other arbitrary values are allowed too if they are useful to protocol implementers.
+`"purpose"` is an array of strings that state the key's purpose. Typically this will be either `"sig"` (for signing messages), or `"enc"` for encrypting/decrypting messages, or it could be both. `"aut"` indicates the key can be used to modifying the purpose of other keys with `OP_KEY_UPDATE`. Other arbitrary values are allowed too if they are useful to protocol implementers.
 
 `"data"` is a JSON string specifying the public key itself (other types of keys, like encrypted secret keys, are stored under `meta.private`). Key data is a JSON stringified array of the following structure:
 
@@ -116,17 +122,31 @@ How the string for the `publicKey` and `secretKey` is generated depends on the k
 - `'curve25519xsalsa20poly1305'`
 - `'xsalsa20poly1305'`
 
-> ⚠︎ Shelter Protocol currently does not specify what these key types are, leaving it up to individual implementations to decide. Future protocol upgrades could standardize type names. For now, we encourage implementers to choose unique type names that are long and descriptive of the ciphers used.
+<Aside type="note">
+  Shelter Protocol currently does not specify what these key types are, leaving it up to individual implementations to decide. Future protocol upgrades could standardize type names. For now, we encourage implementers to choose unique type names that are long and descriptive of the ciphers used.
+</Aside>
 
-`"permissions"` is a list of opcode values (e.g. `"ka"`, `"ae"`, etc.) that this key is allowed to perform. Alternatively, the special value `"*"` may be used to indicate all permissions are granted (to support extending the protocol with new opcodes).
+`"permissions"` is a list of opcode values (e.g. `"ka"`, `"ae"`, etc.) that this key is allowed to perform. Alternatively, the special value `"*"` may be used to indicate all permissions are granted (to support extending the protocol with new opcodes). Important to note that a key with `"ka"` permissions cannot add a key with more permissions than it has.
+
+In addition to opcode values, there are special permissions:
+
+- `ae#inner`: Indicates this key has permission to perform an inner signature for `ae` messages. Keys with this permission MUST specify `"allowedActions"`.
+- `au#inner`: Indicates this key has permission to perform an inner signature for `au` messages. Keys with this permission MUST specify `"allowedActions"`.
+- `kd#self`: Allows keys with `ka` permission to delete keys they've created without granting full `kd` permissions.
 
 `"ringLevel"` specifies which keys are allowed to replace other keys. Keys of an equal or lower ring level can replace keys of an equal or higher ring level using [`OP_KEY_UPDATE`](#op_key_update) or [`OP_KEY_DEL`](#op_key_del). The lowest ring level is `0`, and the highest is `2^53-1` (`Number.MAX_SAFE_INTEGER`). The ring level must be the same or higher as the key sending this message.
 
+`"allowedActions"` this field is optional **but mandatory** on all keys with either `"ae"` or `"au"` permissions. `"*"` means all actions are allowed, and an array specifies the specific actions allowed. Selectors can have a `#inner` suffix which means the key is allowed to perform this action only if it has an inner signature.
+
+`"permissionsContext"` allows permissions to be further narrowed to various contexts (contexts are just strings of up to 255 characters in length). If specified, this key can only act on other keys that exist in one of these contexts. This is particularly useful for restricting `OP_KEY_UPDATE` and `OP_KEY_DEL` operations issued by this key.
+
 `"foreignKey"` - if present, indicates that this entry is a reference copy of a key from another contract. A key with the name `<foreignKeyName>` on `<contractID>` must then be monitored for any updates, and those updates mirrored to this contract. If either [`OP_KEY_UPDATE`](#op_key_update) or [`OP_KEY_DEL`](#op_key_del) are called on the key on the `foreignKey`, then any client syncing this contract that has the ability to mirror those updates to this contract (they posses the appropriate `permissions` and `ringLevel`) must mirror those updates to this contract, if and only if the updates haven't already been mirrored. Mirroring stops once `OP_KEY_DEL` removes the key either on the foreign contract or locally on this contract.
 
-> ⚠︎ Important considerations
-> - To avoid name collisions, contracts must not copy a foreign key's name into this contract. Example: when adding a foreign `#csk` to a contract with an existing `#csk`, it is best to contextualize the key name, for example: `<contractID>/#csk`.
-> - No proof is included showing `foreignKey` matches the key on the foreign contract because keys can be lost and replaced by other keys, and therefore there is no trivial way to include a proof that the keys match without mirroring all of the keys of the foreign contract.
+<Aside>
+  Important considerations:
+  - To avoid name collisions, contracts must not copy a foreign key's name into this contract. Example: when adding a foreign `#csk` to a contract with an existing `#csk`, it is best to contextualize the key name, for example: `<contractID>/#csk`.
+  - No proof is included showing `foreignKey` matches the key on the foreign contract because keys can be lost and replaced by other keys, and therefore there is no trivial way to include a proof that the keys match without mirroring all of the keys of the foreign contract.
+</Aside>
 
 `"meta"` - if present, specifies metadata for the key. A contract might want to include an encrypted copy of a private key for example, and in this case the `meta.private` field can be used for this purpose.
 
@@ -177,11 +197,20 @@ When rotating a key, it acts as a `OP_KEY_DEL` and `OP_KEY_ADD`, deleting `<oldK
 ]
 ```
 
-Any updates to `"purpose"` or `"permissions"` must be sctrictly more restrictive.
+<Aside type="note">
+  A key that has `OP_KEY_UPDATE` permissions can be used to expand or restrict the permissions of another key, subject to the following conditions:
 
-> ⚠︎ Gotchas when mirroring `foreignKey` updates:
-> - Contracts must not copy a foreign key's name into this contract, but instead should use a contextualized name. Example: when updating a foreign `#csk`, rename the key to: `<contractID>/#csk`.
-> - It is possible to see the same `OP_KEY_UPDATE` twice because two clients might broadcast it simultaneously. If this happens, `oldKeyId` will be missing in the contract state, and implementations should ignore the duplicate message.
+  1. It has a `ringLevel` equal to or less than the other key it is operating on.
+  2. It cannot grant permissions it doesn't have.
+  3. It cannot expand the purpose of another key if it doesn’t have that purpose itself, except for keys having the `aut` purpose, which are not subject to this restriction.
+</Aside>
+
+<Aside type="caution">
+  Gotchas when mirroring `foreignKey` updates:
+  - Contracts must not copy a foreign key's name into this contract, but instead should use a contextualized name. Example: when updating a foreign `#csk`, rename the key to: `<contractID>/#csk`.
+  - It is possible to see the same `OP_KEY_UPDATE` twice because two clients might broadcast it simultaneously. If this happens, `oldKeyId` will be missing in the contract state, and implementations should ignore the duplicate message.
+</Aside>
+
 
 **Affected state:**
 
@@ -200,7 +229,9 @@ Specifies an array of keyIds to delete from the contract. Deleted keys can no lo
 
 Note that if a key is deleted, any contracts listening for updates to this key via [`foreignKey`](#op_key_add) will stop listening.
 
-> ⚠︎ When mirroring `foreignKey` updates, it is possible to see the same `OP_KEY_DEL` twice because two clients might broadcast it simultaneously. If this happens, the key being deleted won't exist anymore, and implementations should ignore the duplicate message.
+<Aside>
+  When mirroring `foreignKey` updates, it is possible to see the same `OP_KEY_DEL` twice because two clients might broadcast it simultaneously. If this happens, the key being deleted won't exist anymore, and implementations should ignore the duplicate message.
+</Aside>
 
 **Affected state:**
 
@@ -213,7 +244,9 @@ Allows contracts to request private keys from other contracts (shared via [`OP_K
 
 A real-world usecase for this opcode is in the handling of invites to join a group. To see how `OP_KEY_REQUEST` can be used in conjunction with a limited quantity of invites (or invites that expire), see [Reference: Invite Keys](/en/invite-keys).
 
-> ⚠︎ Implementations should make sure that when an `OP_KEY_REQUEST` is issued from `contract A` to `contract B`, that `contract B` has the correct permissions to be able to send a response back with [`OP_KEY_SHARE`](#op_key_share). For example, implementations can ensure this by first issuing an [`OP_KEY_ADD`](#op_key_add) to `contract A` with [`OP_KEY_SHARE`](#op_key_share) permissions, for all of the keys in `contract B` that have [`KEY_REQUEST_SEEN`](#op_key_request_seen) permissions (as foreign keys).
+<Aside>
+  Implementations should make sure that when an `OP_KEY_REQUEST` is issued from `contract A` to `contract B`, that `contract B` has the correct permissions to be able to send a response back with [`OP_KEY_SHARE`](#op_key_share). For example, implementations can ensure this by first issuing an [`OP_KEY_ADD`](#op_key_add) to `contract A` with [`OP_KEY_SHARE`](#op_key_share) permissions, for all of the keys in `contract B` that have [`KEY_REQUEST_SEEN`](#op_key_request_seen) permissions (as foreign keys).
+</Aside>
 
 - Opcode: `"kr"`
 
@@ -359,7 +392,7 @@ Requests permission to write to a contract. The only opcode that is allowed to b
   - Clients and servers should enforce strict limits for the length of values for the fields of the key's `meta` data.
 - `keyShare` - optionally offers to share a private key via [`OP_KEY_SHARE`](#op_key_share), if approved. Clients and servers should enforce strict limits on the length of values for the fields of the key's `meta` data.
 
-<!-- TODO: address rate limiting -->
+{/* TODO: address rate limiting */}
 
 **Affected state:**
 
