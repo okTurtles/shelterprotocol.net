@@ -3,6 +3,10 @@ title: "History"
 description: "Shelter Protocol History"
 ---
 
+### 1.0.0g
+
+- Improved wording of when "ringLevel" key replacement (previously it wasn't clear if a key at the same ring level could replace/delete a key of the same ring level).
+
 ### 1.0.0f
 
 - Updated `OP_ACTION_ENCRYPTED` definition.
