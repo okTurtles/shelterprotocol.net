@@ -3,6 +3,12 @@ title: "History"
 description: "Shelter Protocol History"
 ---
 
+### 1.0.0h
+
+- Updated `OP_KEY_ADD` with `"permissionsContext"`, `"allowedActions"`, and special permissions `ae#inner`, `kd#self`
+- Clarified `"ringLevel"` precedence and other permissions related concepts.
+- Updated Starlight docs to add support for colorful Asides.
+
 ### 1.0.0g
 
 - Improved wording of when "ringLevel" key replacement (previously it wasn't clear if a key at the same ring level could replace/delete a key of the same ring level).
