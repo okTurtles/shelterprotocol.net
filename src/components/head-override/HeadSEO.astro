@@ -1,7 +1,9 @@
 ---
 import { SITE, OPEN_GRAPH } from '@/consts';
 
-const { entry, slug } = Astro.props
+const { entry } = Astro.props
+
+const slug = entry?.slug || ''
 const pageFrontmatter = entry?.data || {} // reference: https://starlight.astro.build/reference/overrides/#entry
 const { title, description, image, ogLocale  } = pageFrontmatter
 

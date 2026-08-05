@@ -10,12 +10,13 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/mdx": "1.1.0",
+    "@astrojs/mdx": "4.3.13",
     "@astrojs/preact": "3.0.0",
-    "@astrojs/starlight": "0.11.2",
+    "@astrojs/starlight": "0.37.4",
     "@docsearch/css": "3.5.2",
     "@types/node": "20.6.1",
-    "astro": "3.2.0",
+    "astro": "5.17.1",
+    "astro-expressive-code": "0.41.6",
     "preact": "10.17.1"
   },
   "devDependencies": {

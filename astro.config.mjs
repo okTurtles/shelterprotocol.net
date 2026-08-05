@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config'
 import preact from '@astrojs/preact'
+import astroExpressiveCode from 'astro-expressive-code'
 import mdx from '@astrojs/mdx'
 import starlight from "@astrojs/starlight"
 
@@ -10,6 +11,7 @@ export default defineConfig({
   integrations: [
     // Enable Preact to support Preact JSX components.
     preact(),
+    astroExpressiveCode(),
     mdx(),
     starlight({
       title: 'Shelter Protocol',
@@ -34,40 +36,40 @@ export default defineConfig({
         {
           label: 'Overview',
           items: [
-            { label: 'Introduction', link: '/en/introduction' },
-            { label: 'Key Concepts', link: '/en/key-concepts' },
-            { label: 'Multiple Devices', link: '/en/multi-device' },
-            { label: 'Message Processing', link: '/en/message-processing' },
-            { label: 'Federation', link: '/en/federation' },
-            { label: 'Security', link: '/en/security' },
-            { label: 'Implementations', link: '/en/implementations' }
+            { label: 'Introduction', link: '/introduction' },
+            { label: 'Key Concepts', link: '/key-concepts' },
+            { label: 'Multiple Devices', link: '/multi-device' },
+            { label: 'Message Processing', link: '/message-processing' },
+            { label: 'Federation', link: '/federation' },
+            { label: 'Security', link: '/security' },
+            { label: 'Implementations', link: '/implementations' }
           ]
         },
         {
           label: 'Examples',
           items: [
-            { label: 'Identity Contract', link: '/en/identity-contract' },
-            { label: 'Real-world Apps', link: '/en/usecases' }
+            { label: 'Identity Contract', link: '/identity-contract' },
+            { label: 'Real-world Apps', link: '/usecases' }
           ]
         },
         {
           label: 'Reference',
           items: [
-            { label: 'SPMessage', link: '/en/spmessage' },
-            { label: 'Opcodes', link: '/en/opcodes' },
-            { label: 'Server API', link: '/en/server-api' },
-            { label: 'Invite Keys', link: '/en/invite-keys' },
-            { label: 'Contract Manifests', link: '/en/contract-manifests' },
-            { label: 'State Snapshots', link: '/en/state-snapshots' },
-            { label: 'ZKPP', link: '/en/zkpp' },
-            { label: 'URI Scheme', link: '/en/scheme' }
+            { label: 'SPMessage', link: '/spmessage' },
+            { label: 'Opcodes', link: '/opcodes' },
+            { label: 'Server API', link: '/server-api' },
+            { label: 'Invite Keys', link: '/invite-keys' },
+            { label: 'Contract Manifests', link: '/contract-manifests' },
+            { label: 'State Snapshots', link: '/state-snapshots' },
+            { label: 'ZKPP', link: '/zkpp' },
+            { label: 'URI Scheme', link: '/scheme' }
           ]
         },
         {
           label: 'About',
           items: [
-            { label: 'Authors', link: '/en/authors' },
-            { label: 'History', link: '/en/history' }
+            { label: 'Authors', link: '/authors' },
+            { label: 'History', link: '/history' }
           ]
         },
         {
